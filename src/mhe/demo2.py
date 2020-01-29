@@ -1,3 +1,4 @@
+from __future__ import with_statement
 import sys
 
 from java.awt import *
@@ -21,7 +22,7 @@ from edu.mines.jtk.ogl.Gl import *
 from edu.mines.jtk.sgl import *
 from edu.mines.jtk.util import *
 from edu.mines.jtk.util.ArrayMath import *
-
+import pickle
 from mhe import *
 _dataDir = "../../data/2d/"
 _pngDir = "../../png/2d/"
@@ -83,6 +84,15 @@ def goTpdPick():
   title2 = "LS horizon with local slopes & multi-grid correlations"
   title3 = "LS horizon with local slopes only"
   title4 = "Predictive horizon with local slopes only"
+
+  a = []
+  for lines in cv1s:
+    for k in lines:
+      a.append(k)
+
+  with open(ffile + ".txt", "wb") as fp:
+    pickle.dump(a, fp)
+
   plot(s1,s2,f,title=title1,w1=800,w2=420,png="seis")
   plot(s1,s2,f,h=cv1s,title=title2,k2=k2,k1=k1,w1=800,w2=420,png="tpdm")
   plot(s1,s2,f,h=cv2s,title=title3,k2=k2,k1=k1,w1=800,w2=420,png="tpds")
