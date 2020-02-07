@@ -28,9 +28,77 @@ _dataDir = "../../data/2d/"
 _pngDir = "../../png/2d/"
 
 def main(args):
-  goTpdPick()
+  overthrust()
+  # goTpdPick()
   #goF3dPick()
   #goCurtPick()
+
+def overthrust():
+  ffile = "dm"
+  global s1,s2
+  global n1,n2
+  global seismicDir,pngDir
+  pngDir = _pngDir+"overthrust/"
+  seismicDir = _dataDir+"overthrust/"
+  s1 = Sampling(121,1.0,0.0)
+  s2 = Sampling(401,1.0,0.0)
+  n1,n2 = s1.count,s2.count
+  f = readImage(ffile)
+  p2 = zerofloat(n1,n2)
+  wp = zerofloat(n1,n2)
+  sigma1,sigma2,pmax=8.0,2.0,2.0
+  lsf = LocalSlopeFinder(sigma1,sigma2,pmax)
+  lsf.findSlopes(f,p2,wp) # estimate slopes and linearity
+  wp = pow(wp,8)
+  he2 = HorizonExtractor2()
+  he2.setSmoothing(6)
+  he2.setWeight(0.001)
+  he2.setExternalIterations(20)
+  #set control points
+  k1,k2=[],[]
+  for i1 in range(9):
+    k2.append(50)
+    k1.append(0)
+  k1[0] = 19
+  k1[1] = 30
+  k1[2] = 46
+  k1[3] = 62
+  k1[4] = 72
+  k1[5] = 86
+  k1[6] = 95
+  k1[7] = 99
+  k1[8] = 115
+
+  cv1s,cv2s,cv3s = [],[],[]
+  for ip in range(len(k1)):
+    k1i = [k1[ip]]
+    k2i = [k2[ip]]
+    cv1 = he2.curveInitialization(n1,n2,k1i,k2i)
+    cv2 = copy(cv1)
+    cv1 = he2.curveUpdateFromSlopesAndCorrelations(10,30,60,f,wp,p2,k1i,k2i,cv1);
+    cv2 = he2.curveUpdateFromSlopes(wp,p2,k1i,k2i,cv2);
+    cv3 = he2.dipPredict1(k1[ip],k2[ip],p2)
+    cv1s.append(cv1)
+    cv2s.append(cv2)
+    cv3s.append(cv3)
+  title1 = "input seismic"
+  title2 = "LS horizon with local slopes & multi-grid correlations"
+  title3 = "LS horizon with local slopes only"
+  title4 = "Predictive horizon with local slopes only"
+
+  a = []
+  for lines in cv1s:
+    for k in lines:
+      a.append(k)
+
+  with open(ffile + ".txt", "wb") as fp:
+    pickle.dump(a, fp)
+
+  plot(s1,s2,f,title=title1,w1=401,w2=121,png="seis",cmin=-.03, cmax=.03)
+  plot(s1,s2,f,h=cv1s,title=title2,k2=k2,k1=k1,w1=401,w2=121,png="tpdm",cmin=-.03, cmax=.03)
+  plot(s1,s2,f,h=cv2s,title=title3,k2=k2,k1=k1,w1=401,w2=121,png="tpds",cmin=-.03, cmax=.03)
+  plot(s1,s2,f,h=cv3s,title=title4,k2=k2,k1=k1,w1=401,w2=121,png="tpdp",cmin=-.03, cmax=.03)
+  plot(s1,s2,f,k2=k2,k1=k1,w1=401,w2=121,png="tpdp",cmin=-.03, cmax=.03)
 
 # example one: Teapot dome dataset
 def goTpdPick():
@@ -306,7 +374,7 @@ def plot(s1,s2,x,h=None,hs=None,k2=None,k1=None,v1=None,v2=None,
       pv.setMarkSize(8)
       pv.setLineWidth(4)
       sp.add(pv)
-  sp.setSize(w2,w1)
+  # sp.setSize(w2,w1)
   sp.setFontSize(12)
   sp.plotPanel.setColorBarWidthMinimum(45)
   if pngDir and png:

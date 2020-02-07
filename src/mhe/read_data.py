@@ -13,10 +13,9 @@ if __name__ == '__main__':
     seismicDir = "tpd"
     name = "tp73.dat"
     fileName = os.path.join(_dataDir, seismicDir, name)
-
     data = my_read(fileName)
 
-    n1,n2 = 240, 357
-    plt.imshow(np.reshape(data, (n2, -1)).T);plt.show()
+    n = 357
+    plt.imshow(np.reshape(data, (n, -1)).T); plt.show()
 
 
