@@ -34,7 +34,7 @@ def main(args):
   #goCurtPick()
 
 def overthrust():
-  ffile = "dm"
+  ffile = "myfile_111"
   global s1,s2
   global n1,n2
   global seismicDir,pngDir
@@ -51,23 +51,15 @@ def overthrust():
   lsf.findSlopes(f,p2,wp) # estimate slopes and linearity
   wp = pow(wp,8)
   he2 = HorizonExtractor2()
-  he2.setSmoothing(6)
-  he2.setWeight(0.001)
+  he2.setSmoothing(.006)
+  he2.setWeight(0.00001)
   he2.setExternalIterations(20)
   #set control points
-  k1,k2=[],[]
-  for i1 in range(9):
+  # k1 = [19, 30, 46, 62, 80, 86, 95, 99, 115, 120]
+  k1 = [80, 86, 95, 99, 115, 120]
+  k2 = []
+  for i1 in range(len(k1)):
     k2.append(50)
-    k1.append(0)
-  k1[0] = 19
-  k1[1] = 30
-  k1[2] = 46
-  k1[3] = 62
-  k1[4] = 72
-  k1[5] = 86
-  k1[6] = 95
-  k1[7] = 99
-  k1[8] = 115
 
   cv1s,cv2s,cv3s = [],[],[]
   for ip in range(len(k1)):
@@ -87,18 +79,18 @@ def overthrust():
   title4 = "Predictive horizon with local slopes only"
 
   a = []
-  for lines in cv1s:
+  for lines in cv3s:
     for k in lines:
       a.append(k)
 
-  with open(ffile + ".txt", "wb") as fp:
+  with open("horizons/" + ffile + ".txt", "wb") as fp:
     pickle.dump(a, fp)
 
-  plot(s1,s2,f,title=title1,w1=401,w2=121,png="seis",cmin=-.03, cmax=.03)
-  plot(s1,s2,f,h=cv1s,title=title2,k2=k2,k1=k1,w1=401,w2=121,png="tpdm",cmin=-.03, cmax=.03)
-  plot(s1,s2,f,h=cv2s,title=title3,k2=k2,k1=k1,w1=401,w2=121,png="tpds",cmin=-.03, cmax=.03)
-  plot(s1,s2,f,h=cv3s,title=title4,k2=k2,k1=k1,w1=401,w2=121,png="tpdp",cmin=-.03, cmax=.03)
-  plot(s1,s2,f,k2=k2,k1=k1,w1=401,w2=121,png="tpdp",cmin=-.03, cmax=.03)
+  # plot(s1,s2,f,title=title1,w1=401,w2=121,png="seis",cmin=-.03, cmax=.03)
+  # plot(s1,s2,f,h=cv1s,title=title2,k2=k2,k1=k1,w1=401,w2=121,png="tpdm",cmin=-.03, cmax=.03)
+  # plot(s1,s2,f,h=cv2s,title=title3,k2=k2,k1=k1,w1=401,w2=121,png="tpds",cmin=-.03, cmax=.03)
+  # plot(s1,s2,f,h=cv3s,title=title4,k2=k2,k1=k1,w1=401,w2=121,png="tpdp",cmin=-.03, cmax=.03)
+  # plot(s1,s2,f,k2=k2,k1=k1,w1=401,w2=121,png="tpdp",cmin=-.03, cmax=.03)
 
 # example one: Teapot dome dataset
 def goTpdPick():
