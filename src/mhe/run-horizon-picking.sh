@@ -17,11 +17,5 @@ for filename in myfile*.dat; do
 
 	cd $src_dir
 	./jy demo2.py
-
-	# python main.py --experiment $d --phase test --cuda 0
-	# python main.py --experiment $d --phase prior --cuda 1
-	# echo Uploading to dropbox ...
-	# rclone copy -x $src_dir/sample/$d $dropbox_path/$d
-	# rclone copy -x $src_dir/checkpoint/$d $dropbox_path/${d: :-1}/checkpoint
 done
 
