@@ -44,6 +44,7 @@ if __name__ == '__main__':
     for j in range(samples.shape[0]):
         samples[j, :, :] = model_topMute(samples[j, :, :])
     samples = np.transpose(samples, (0, 2, 1))
+    samples_mean = np.mean(samples[burn_in_index:, :, :], axis=0)
 
     if not os.path.exists('samples'):
         os.makedirs('samples')
@@ -52,3 +53,4 @@ if __name__ == '__main__':
         my_save(samples[j, ...].reshape(-1), os.path.join('samples', 'myfile_' + str(j) + '.dat'))
 
     my_save(dm.numpy().reshape(-1), os.path.join('samples', 'dm.dat'))
+    my_save(samples_mean.reshape(-1), os.path.join('samples', 'samples_mean.dat'))

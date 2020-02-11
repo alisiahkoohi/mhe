@@ -34,7 +34,7 @@ def main(args):
   #goCurtPick()
 
 def overthrust():
-  ffile = "myfile_119"
+  ffile = "myfile_9"
   global s1,s2
   global n1,n2
   global seismicDir,pngDir
