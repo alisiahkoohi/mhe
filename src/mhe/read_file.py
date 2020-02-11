@@ -2,9 +2,9 @@ import pickle
 import numpy as np
 import matplotlib.pyplot as plt
 
-ffile = "myfile_0"
+ffile = "myfile_121"
 
-with open(ffile + ".txt", "rb") as fp:
+with open("horizons/" + ffile + ".txt", "rb") as fp:
 	horizons = pickle.load(fp)
 horizons = np.array(horizons).reshape([6, -1])
 
